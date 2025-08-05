@@ -35,15 +35,18 @@ if (process.env.OPENAI_API_KEY) {
 }
 
 async function runTechnicalAnalysis(url) {
-  // Check if we're in a serverless environment (like Vercel)
-  if (process.env.VERCEL || process.env.NOW_REGION) {
-    console.log('Serverless environment detected, skipping Puppeteer analysis');
-    return null;
-  }
-  
   const browser = await puppeteer.launch({ 
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'] // Better Vercel compatibility
+    args: [
+      '--no-sandbox', 
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
+      '--no-zygote',
+      '--single-process',
+      '--disable-gpu'
+    ]
   });
   const page = await browser.newPage();
   
@@ -188,7 +191,20 @@ function analyzeScripts(scripts) {
 async function runLighthouseAnalysis(url) {
   let chrome;
   try {
-    chrome = await chromeLauncher.launch({chromeFlags: ['--headless']});
+    chrome = await chromeLauncher.launch({
+      chromeFlags: [
+        '--headless',
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process',
+        '--disable-gpu'
+      ]
+    });
+    
     const options = {
       logLevel: 'info',
       output: 'json',
