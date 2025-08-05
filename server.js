@@ -379,8 +379,22 @@ app.post('/api/debug', (req, res) => {
   }
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  try {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  } catch (error) {
+    console.error('Error serving index.html:', error);
+    res.status(500).send('Server Error');
+  }
 });
 
 // Add explicit error handling middleware
@@ -394,11 +408,34 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📋 Environment: ${process.env.NODE_ENV || 'development'}`);
   if (!process.env.OPENAI_API_KEY) {
-    console.log('📝 To enable AI reports, add OPENAI_API_KEY to your .env file');
+    console.log('📝 To enable AI reports, add OPENAI_API_KEY environment variable');
   } else {
     console.log('✅ AI reports are enabled');
   }
+});
+
+server.on('error', (err) => {
+  console.error('Server error:', err);
+  process.exit(1);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  server.close(() => {
+    console.log('Process terminated');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received, shutting down gracefully');
+  server.close(() => {
+    console.log('Process terminated');
+    process.exit(0);
+  });
 });

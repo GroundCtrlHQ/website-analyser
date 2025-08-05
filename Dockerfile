@@ -1,12 +1,30 @@
-FROM node:18
+FROM node:18-slim
 
 # Install Chrome dependencies
 RUN apt-get update && apt-get install -y \
     wget \
+    curl \
     gnupg \
     ca-certificates \
-    procps \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libcups2 \
+    libdbus-1-3 \
+    libdrm2 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libx11-xcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
     libxss1 \
+    libxtst6 \
+    lsb-release \
+    xdg-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Google Chrome
@@ -18,21 +36,35 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files first for better caching
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci --only=production
 
 # Copy source code
 COPY . .
 
-# Set environment variables for Chrome
+# Create a non-root user
+RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
+    && mkdir -p /home/pptruser/Downloads \
+    && chown -R pptruser:pptruser /home/pptruser \
+    && chown -R pptruser:pptruser /app
+
+# Run as non-root user
+USER pptruser
+
+# Set environment variables
 ENV CHROME_BIN=/usr/bin/google-chrome-stable
 ENV CHROME_PATH=/usr/bin/google-chrome-stable
+ENV NODE_ENV=production
 
 # Expose port
 EXPOSE 3000
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3000/health || exit 1
+
 # Start the application
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
