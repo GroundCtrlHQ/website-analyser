@@ -1,0 +1,323 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box
+}
+
+:root {
+    --color-bg: #0d1721;
+    --color-text: #cff9ff;
+    --color-glow: #7fced9;
+    --hero: clamp(1.125rem,-1.0924rem + 11.087vw,1.5rem);
+    --spacing-sm: 0.5em;
+    --spacing-md: 1em;
+    --spacing-lg: 2em;
+    --header-height: 15vh;
+    --header-min-height: 70px;
+    --header-max-height: 100px
+}
+
+html:after {
+    background: rgba(18,16,16,.1);
+    opacity: 0;
+    z-index: 2
+}
+
+html:after,html:before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    pointer-events: none
+}
+
+html:before {
+    background: linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.25) 0),linear-gradient(90deg,rgba(255,0,0,.06),rgba(0,255,0,.02),rgba(0,0,255,.06));
+    z-index: 3;
+    background-size: 100% 2px,3px 100%
+}
+
+body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: manifold-cf, sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--color-text);
+}
+
+header h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+header p {
+    font-size: 1.2rem;
+    color: var(--color-text);
+    opacity: 0.9;
+}
+
+.input-section {
+    background: var(--color-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--color-glow);
+    margin-bottom: 2rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+label {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+input[type="url"] {
+    padding: 1rem;
+    border: 2px solid var(--color-glow);
+    border-radius: 8px;
+    font-size: 1.1rem;
+    background: var(--color-bg);
+    color: var(--color-text);
+    transition: border-color 0.3s ease;
+}
+
+input[type="url"]:focus {
+    outline: none;
+    border-color: var(--color-glow);
+    box-shadow: 0 0 10px rgba(127, 206, 217, 0.3);
+}
+
+button {
+    background: var(--color-glow);
+    color: var(--color-bg);
+    border: 2px solid var(--color-glow);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(127, 206, 217, 0.5);
+}
+
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(127, 206, 217, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--color-glow);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.results-section {
+    background: var(--color-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--color-glow);
+}
+
+.scores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.score-card {
+    background: var(--color-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid var(--color-glow);
+}
+
+.score-card h3 {
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.score {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color-text);
+}
+
+.score.good { color: #28a745; }
+.score.okay { color: #ffc107; }
+.score.poor { color: #dc3545; }
+
+.technical-section {
+    background: var(--color-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--color-glow);
+    margin-bottom: 2rem;
+}
+
+.technical-section h2 {
+    color: var(--color-text);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.technical-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.tech-category {
+    background: var(--color-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(127, 206, 217, 0.3);
+}
+
+.tech-category h4 {
+    color: var(--color-glow);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tech-list {
+    list-style: none;
+    padding: 0;
+}
+
+.tech-list li {
+    color: var(--color-text);
+    padding: 0.2rem 0;
+    font-size: 0.9rem;
+}
+
+.tech-list li:before {
+    content: "▸ ";
+    color: var(--color-glow);
+    margin-right: 0.5rem;
+}
+
+.report-section h2 {
+    color: var(--color-text);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.ai-report {
+    background: var(--color-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-glow);
+    line-height: 1.7;
+}
+
+.ai-report h3 {
+    color: var(--color-text);
+    margin: 1.5rem 0 0.5rem 0;
+    font-size: 1.2rem;
+}
+
+.ai-report h3:first-child {
+    margin-top: 0;
+}
+
+.ai-report h4 {
+    color: var(--color-text);
+    margin: 1rem 0 0.5rem 0;
+    font-size: 1rem;
+}
+
+.ai-report p {
+    margin: 0.5rem 0;
+    color: var(--color-text);
+}
+
+.ai-report ul, .ai-report ol {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.ai-report li {
+    margin-bottom: 0.3rem;
+    color: var(--color-text);
+}
+
+.ai-report strong {
+    color: var(--color-glow);
+    font-weight: 600;
+}
+
+.ai-report em {
+    color: var(--color-glow);
+    font-style: italic;
+}
+
+.error-message {
+    background: var(--color-bg);
+    color: #dc3545;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #dc3545;
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .input-group {
+        gap: 0.5rem;
+    }
+    
+    .scores-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
