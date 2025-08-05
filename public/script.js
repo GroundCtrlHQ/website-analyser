@@ -34,7 +34,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify({ url })
             });
             
-            const data = await response.json();
+            const responseText = await response.text();
+            console.log('Raw response:', responseText);
+            
+            let data;
+            try {
+                data = JSON.parse(responseText);
+            } catch (parseError) {
+                console.error('JSON parse error:', parseError);
+                console.error('Response text:', responseText);
+                throw new Error('Server returned invalid response. Check console for details.');
+            }
             
             if (!response.ok) {
                 throw new Error(data.error || 'Analysis failed');

@@ -35,7 +35,16 @@ if (process.env.OPENAI_API_KEY) {
 }
 
 async function runTechnicalAnalysis(url) {
-  const browser = await puppeteer.launch({ headless: true });
+  // Check if we're in a serverless environment (like Vercel)
+  if (process.env.VERCEL || process.env.NOW_REGION) {
+    console.log('Serverless environment detected, skipping Puppeteer analysis');
+    return null;
+  }
+  
+  const browser = await puppeteer.launch({ 
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'] // Better Vercel compatibility
+  });
   const page = await browser.newPage();
   
   try {
@@ -280,34 +289,70 @@ Do not include DOCTYPE, html, head, or body tags - just the content HTML.`;
 
 app.post('/analyze', async (req, res) => {
   try {
+    console.log('Analysis request received:', req.body);
+    
     const { url } = req.body;
     
     if (!url) {
+      console.log('Error: URL is required');
       return res.status(400).json({ error: 'URL is required' });
     }
     
     const urlPattern = /^https?:\/\/.+\..+/;
     if (!urlPattern.test(url)) {
+      console.log('Error: Invalid URL format:', url);
       return res.status(400).json({ error: 'Please provide a valid URL starting with http:// or https://' });
     }
     
-    // Run both analyses in parallel
-    const [lighthouseData, technicalData] = await Promise.all([
-      runLighthouseAnalysis(url),
-      runTechnicalAnalysis(url)
-    ]);
+    console.log('Starting analysis for:', url);
     
+    // Try running analyses separately to identify which one fails
+    let lighthouseData, technicalData;
+    
+    try {
+      console.log('Running Lighthouse analysis...');
+      lighthouseData = await runLighthouseAnalysis(url);
+      console.log('Lighthouse analysis completed');
+    } catch (lighthouseError) {
+      console.error('Lighthouse analysis failed:', lighthouseError);
+      return res.status(500).json({ error: `Lighthouse analysis failed: ${lighthouseError.message}` });
+    }
+    
+    try {
+      console.log('Running technical analysis...');
+      technicalData = await runTechnicalAnalysis(url);
+      console.log('Technical analysis completed');
+    } catch (techError) {
+      console.error('Technical analysis failed:', techError);
+      // Continue without technical data if it fails
+      technicalData = null;
+      console.log('Continuing without technical analysis data');
+    }
+    
+    console.log('Generating report...');
     const report = await generateFriendlyReport(lighthouseData, technicalData);
+    console.log('Report generated successfully');
     
     res.json(report);
   } catch (error) {
     console.error('Analysis error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message || 'Internal server error' });
   }
 });
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Add explicit error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+// Handle 404s
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found' });
 });
 
 app.listen(PORT, () => {
