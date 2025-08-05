@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
             hideError();
             hideResults();
             
-            const response = await fetch('/analyze', {
+            const response = await fetch('/api/analyze', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

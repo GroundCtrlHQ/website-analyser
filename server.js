@@ -340,6 +340,29 @@ app.post('/analyze', async (req, res) => {
   }
 });
 
+// Add a simple test endpoint
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'Server is working', timestamp: new Date().toISOString() });
+});
+
+// Add a debug endpoint for the analyze function
+app.post('/api/debug', (req, res) => {
+  try {
+    const { url } = req.body;
+    res.json({ 
+      received: true, 
+      url: url,
+      body: req.body,
+      env: {
+        vercel: !!process.env.VERCEL,
+        openai: !!process.env.OPENAI_API_KEY
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
