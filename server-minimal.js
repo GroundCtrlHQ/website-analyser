@@ -1,6 +1,7 @@
 // Minimal server for Railway debugging
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,6 +12,7 @@ app.use(express.static('public'));
 
 // Health check
 app.get('/health', (req, res) => {
+  console.log('Health check requested');
   res.status(200).json({ 
     status: 'healthy', 
     timestamp: new Date().toISOString(),
@@ -19,9 +21,45 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Simple test route
+app.get('/test', (req, res) => {
+  console.log('Test route requested');
+  res.send('<h1>Server is working!</h1><p><a href="/health">Health Check</a></p>');
+});
+
 // Homepage
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  try {
+    const filePath = path.join(__dirname, 'public', 'index.html');
+    console.log('Trying to serve file:', filePath);
+    res.sendFile(filePath, (err) => {
+      if (err) {
+        console.error('Error serving index.html:', err);
+        res.status(500).send(`
+          <html>
+            <body>
+              <h1>Website Analyser - Railway Test</h1>
+              <p>Server is running but index.html not found.</p>
+              <p>Health check: <a href="/health">/health</a></p>
+              <p>Error: ${err.message}</p>
+            </body>
+          </html>
+        `);
+      }
+    });
+  } catch (error) {
+    console.error('Homepage error:', error);
+    res.status(500).send(`
+      <html>
+        <body>
+          <h1>Website Analyser - Railway Test</h1>
+          <p>Server is running but there's an issue serving files.</p>
+          <p>Health check: <a href="/health">/health</a></p>
+          <p>Error: ${error.message}</p>
+        </body>
+      </html>
+    `);
+  }
 });
 
 // Minimal analyze endpoint (no Chrome/Puppeteer)
@@ -68,6 +106,9 @@ const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Minimal server running on port ${PORT}`);
   console.log(`📋 Memory usage:`, process.memoryUsage());
   console.log(`📋 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`📋 Working directory:`, __dirname);
+  console.log(`📋 Public directory exists:`, fs.existsSync(path.join(__dirname, 'public')));
+  console.log(`📋 Index.html exists:`, fs.existsSync(path.join(__dirname, 'public', 'index.html')));
 });
 
 server.on('error', (err) => {
