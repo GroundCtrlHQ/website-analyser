@@ -8,8 +8,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install only basic dependencies (no chrome/puppeteer)
-RUN npm install express cors helmet dotenv
+# Install dependencies from package.json (but skip postinstall scripts)
+RUN npm ci --only=production --ignore-scripts
 
 # Copy source code
 COPY . .
