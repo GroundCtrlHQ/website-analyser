@@ -380,7 +380,17 @@ app.post('/analyze', async (req, res) => {
           }
         }
       };
-      technicalData = null; // Skip technical analysis on Railway
+      
+      // Still run technical analysis on Railway - it's lightweight
+      try {
+        console.log('Running technical analysis...');
+        technicalData = await runTechnicalAnalysis(url);
+        console.log('Technical analysis completed');
+      } catch (techError) {
+        console.error('Technical analysis failed:', techError);
+        technicalData = null;
+        console.log('Continuing without technical analysis data');
+      }
     } else {
       // Full analysis for local development
       try {
