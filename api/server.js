@@ -49,10 +49,15 @@ async function runTechnicalAnalysis(url) {
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
       '--disable-accelerated-2d-canvas',
+      '--disable-gpu',
+      '--disable-web-security',
+      '--disable-features=VizDisplayCompositor',
       '--no-first-run',
       '--no-zygote',
       '--single-process',
-      '--disable-gpu'
+      '--disable-background-timer-throttling',
+      '--disable-backgrounding-occluded-windows',
+      '--disable-renderer-backgrounding'
     ]
   });
   const page = await browser.newPage();
@@ -198,6 +203,7 @@ function analyzeScripts(scripts) {
 async function runLighthouseAnalysis(url) {
   let chrome;
   try {
+    // Enhanced Chrome launcher configuration for Railway containers
     chrome = await chromeLauncher.launch({
       chromeFlags: [
         '--headless',
@@ -205,12 +211,25 @@ async function runLighthouseAnalysis(url) {
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
         '--disable-accelerated-2d-canvas',
+        '--disable-gpu',
+        '--disable-web-security',
+        '--disable-features=VizDisplayCompositor',
         '--no-first-run',
         '--no-zygote',
         '--single-process',
-        '--disable-gpu'
-      ]
+        '--disable-background-timer-throttling',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-renderer-backgrounding',
+        '--disable-ipc-flooding-protection',
+        '--remote-debugging-address=0.0.0.0',
+        '--remote-debugging-port=0'
+      ],
+      connectionPollInterval: 500,
+      maxConnectionRetries: 50,
+      logLevel: 'info'
     });
+    
+    console.log(`Chrome launched on port ${chrome.port}`);
     
     const options = {
       logLevel: 'info',
@@ -222,9 +241,11 @@ async function runLighthouseAnalysis(url) {
     const runnerResult = await lighthouse(url, options);
     return runnerResult.lhr;
   } catch (error) {
+    console.error('Lighthouse error:', error);
     throw new Error(`Lighthouse analysis failed: ${error.message}`);
   } finally {
     if (chrome) {
+      console.log('Killing Chrome instance');
       await chrome.kill();
     }
   }
