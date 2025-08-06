@@ -33,12 +33,13 @@ app.use(express.json());
 // API-only server - no static files
 
 let openai;
-if (process.env.OPENAI_API_KEY) {
+if (process.env.OPENROUTER_API_KEY) {
   openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+    apiKey: process.env.OPENROUTER_API_KEY,
+    baseURL: 'https://openrouter.ai/api/v1'
   });
 } else {
-  console.warn('⚠️  OPENAI_API_KEY not set. AI report generation will be disabled.');
+  console.warn('⚠️  OPENROUTER_API_KEY not set. AI report generation will be disabled.');
 }
 
 async function runTechnicalAnalysis(url) {
@@ -279,7 +280,7 @@ async function generateFriendlyReport(lighthouseData, technicalData = null) {
     return {
       scores: reportData,
       technicalData,
-      aiReport: `Website Analysis Complete!\n\nYour website scored:\n• Performance: ${reportData.performance}/100\n• Accessibility: ${reportData.accessibility}/100\n• Best Practices: ${reportData.bestPractices}/100\n• SEO: ${reportData.seo}/100\n\nTo get AI-powered recommendations and detailed insights, please set up your OpenAI API key in the .env file.\n\nKey issues to address:\n${reportData.issues.slice(0, 3).map(issue => `• ${issue.title}`).join('\n')}`
+      aiReport: `Website Analysis Complete!\n\nYour website scored:\n• Performance: ${reportData.performance}/100\n• Accessibility: ${reportData.accessibility}/100\n• Best Practices: ${reportData.bestPractices}/100\n• SEO: ${reportData.seo}/100\n\nTo get AI-powered recommendations and detailed insights, please set up your OpenRouter API key in the .env file.\n\nKey issues to address:\n${reportData.issues.slice(0, 3).map(issue => `• ${issue.title}`).join('\n')}`
     };
   }
   
@@ -428,7 +429,7 @@ app.post('/api/debug', (req, res) => {
       body: req.body,
       env: {
         vercel: !!process.env.VERCEL,
-        openai: !!process.env.OPENAI_API_KEY
+        openrouter: !!process.env.OPENROUTER_API_KEY
       }
     });
   } catch (error) {
@@ -477,8 +478,8 @@ console.log('📋 Port:', PORT);
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📋 Environment: ${process.env.NODE_ENV || 'development'}`);
-  if (!process.env.OPENAI_API_KEY) {
-    console.log('📝 To enable AI reports, add OPENAI_API_KEY environment variable');
+  if (!process.env.OPENROUTER_API_KEY) {
+    console.log('📝 To enable AI reports, add OPENROUTER_API_KEY environment variable');
   } else {
     console.log('✅ AI reports are enabled');
   }
