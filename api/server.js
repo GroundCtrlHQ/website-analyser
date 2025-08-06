@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import lighthouse from 'lighthouse';
-import chromeLauncher from 'chrome-launcher';
+import * as chromeLauncher from 'chrome-launcher';
 import puppeteer from 'puppeteer';
 import OpenAI from 'openai';
 import cors from 'cors';
