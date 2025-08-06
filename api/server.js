@@ -23,7 +23,7 @@ app.use(helmet({
 }));
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+// API-only server - no static files
 
 let openai;
 if (process.env.OPENAI_API_KEY) {
@@ -388,13 +388,17 @@ app.get('/health', (req, res) => {
   });
 });
 
+// API root endpoint
 app.get('/', (req, res) => {
-  try {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  } catch (error) {
-    console.error('Error serving index.html:', error);
-    res.status(500).send('Server Error');
-  }
+  res.json({
+    name: 'Website Analyser API',
+    version: '1.0.0',
+    endpoints: {
+      analyze: 'POST /analyze',
+      health: 'GET /health'
+    },
+    docs: 'https://github.com/your-username/website-analyser'
+  });
 });
 
 // Add explicit error handling middleware

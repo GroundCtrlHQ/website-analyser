@@ -1,62 +1,89 @@
-# Website Analyser
+# 🚨 Website Analyser
 
-A web application that analyzes websites using Google Lighthouse and provides AI-powered, user-friendly reports.
+A powerful web application that analyzes websites using Google Lighthouse and provides AI-powered, user-friendly reports with technical deep-dive insights.
 
-## Features
+## ✨ Features
 
-- 🚀 Google Lighthouse integration for comprehensive website analysis
-- 🤖 AI-powered report generation using OpenAI GPT
-- 📊 Performance, Accessibility, Best Practices, and SEO scoring
-- 🎨 Clean, responsive user interface
-- ⚡ Real-time analysis results
+- 🚀 **Google Lighthouse Integration** - Complete performance, accessibility, SEO analysis
+- 🤖 **AI-Powered Reports** - User-friendly recommendations via OpenAI GPT
+- 🔍 **Technical Deep Dive** - Wappalyzer-like technology stack detection
+- 📊 **Visual Score Cards** - Easy-to-understand performance metrics
+- 🎨 **Cyberpunk UI** - Dark theme with glowing effects
+- ⚡ **Hybrid Architecture** - Optimized deployment across platforms
 
-## Setup
+## 🏗️ Architecture
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+**Hybrid Deployment Strategy:**
+- **Frontend**: Vercel (Static files, CDN, auto-scaling)
+- **Backend**: Railway (Chrome, Puppeteer, heavy processing)
 
-2. **Set up environment variables:**
-   ```bash
-   cp .env.example .env
-   ```
-   Add your OpenAI API key to the `.env` file:
-   ```
-   OPENAI_API_KEY=your_actual_api_key_here
-   ```
+```
+Frontend (Vercel)  ←→  API (Railway)
+├── HTML/CSS/JS         ├── Lighthouse analysis  
+├── Static serving      ├── Tech stack detection
+├── Fast CDN           ├── OpenAI integration
+└── Global edge        └── Container processing
+```
 
-3. **Install Google Chrome:**
-   Make sure you have Google Chrome installed as Lighthouse requires it for analysis.
+## 🚀 Quick Start
 
-4. **Run the application:**
-   ```bash
-   npm start
-   ```
-   Or for development with auto-restart:
-   ```bash
-   npm run dev
-   ```
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
 
-5. **Open your browser:**
-   Navigate to `http://localhost:3000`
+### Local Development
+```bash
+# Start API
+cd api && npm install && npm start
 
-## How to Use
+# Serve Frontend  
+cd frontend && python -m http.server 8000
+```
 
-1. Enter a website URL in the input field
-2. Click "Analyze Website"
-3. Wait for the Lighthouse analysis to complete
-4. View your scores and AI-generated friendly report
+## 📁 Project Structure
 
-## Requirements
+```
+├── api/                 # Railway Backend
+│   ├── server.js       # Express API server
+│   ├── package.json    # Dependencies
+│   └── Dockerfile      # Container config
+├── frontend/           # Vercel Frontend
+│   ├── index.html      # Main UI
+│   ├── script.js       # Frontend logic
+│   └── styles.css      # Cyberpunk styling
+└── DEPLOYMENT.md       # Deployment guide
+```
 
-- Node.js 18+
-- Google Chrome browser
-- OpenAI API key
+## 🔧 Tech Stack
 
-## Security Features
+**Frontend:**
+- Vanilla JavaScript (no framework overhead)
+- CSS Custom Properties & Grid
+- Manifold CF typography
+- Responsive design
 
-- Input validation and sanitization
-- CORS protection
-- Helmet.js security headers
-- Environment variable protection
+**Backend:**
+- Node.js + Express
+- Google Lighthouse
+- Puppeteer (technology detection)
+- OpenAI GPT integration
+- Docker containerization
+
+## 🎯 What It Analyzes
+
+**Lighthouse Metrics:**
+- Performance optimization
+- Accessibility compliance  
+- SEO best practices
+- Security & best practices
+
+**Technology Detection:**
+- Frameworks (React, Vue, Angular)
+- CDNs and libraries
+- Analytics tools
+- Server information
+- Meta tag analysis
+
+## 🚀 Live Demo
+
+- **Frontend**: Deploy to Vercel
+- **API**: Deploy to Railway
+- **One Repo**: Monorepo structure for easy management

@@ -1,8 +1,10 @@
 # Dependencies
 node_modules/
+api/node_modules/
 
 # Environment variables
 .env
+api/.env
 
 # Logs
 *.log
@@ -21,6 +23,10 @@ coverage/
 
 # nyc test coverage
 .nyc_output
+
+# Deployment
+.vercel/
+.railway/
 
 # OS generated files
 .DS_Store
