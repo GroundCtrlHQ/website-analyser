@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A web application that analyzes websites using Google Lighthouse and provides AI-powered reports",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",

@@ -1,12 +1,19 @@
-require('dotenv').config();
-const express = require('express');
-const lighthouse = require('lighthouse').default;
-const chromeLauncher = require('chrome-launcher');
-const puppeteer = require('puppeteer');
-const OpenAI = require('openai');
-const cors = require('cors');
-const helmet = require('helmet');
-const path = require('path');
+import dotenv from 'dotenv';
+import express from 'express';
+import lighthouse from 'lighthouse';
+import chromeLauncher from 'chrome-launcher';
+import puppeteer from 'puppeteer';
+import OpenAI from 'openai';
+import cors from 'cors';
+import helmet from 'helmet';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// ES module setup
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
