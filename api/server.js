@@ -419,6 +419,11 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
 
+console.log('🔄 Starting server...');
+console.log('📋 Node version:', process.version);
+console.log('📋 Environment:', process.env.NODE_ENV || 'development');
+console.log('📋 Port:', PORT);
+
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📋 Environment: ${process.env.NODE_ENV || 'development'}`);
@@ -427,6 +432,7 @@ const server = app.listen(PORT, '0.0.0.0', () => {
   } else {
     console.log('✅ AI reports are enabled');
   }
+  console.log('✅ Server startup complete');
 });
 
 server.on('error', (err) => {

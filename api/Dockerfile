@@ -45,16 +45,7 @@ RUN npm ci --only=production
 # Copy source code
 COPY . .
 
-# Create a non-root user
-RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
-    && mkdir -p /home/pptruser/Downloads \
-    && chown -R pptruser:pptruser /home/pptruser \
-    && chown -R pptruser:pptruser /app
-
-# Run as non-root user
-USER pptruser
-
-# Set environment variables
+# Set environment variables for Chrome
 ENV CHROME_BIN=/usr/bin/google-chrome-stable
 ENV CHROME_PATH=/usr/bin/google-chrome-stable
 ENV NODE_ENV=production
@@ -62,9 +53,5 @@ ENV NODE_ENV=production
 # Expose port
 EXPOSE 3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:3000/health || exit 1
-
-# Start the application
+# Start the application (removed non-root user and healthcheck for simplicity)
 CMD ["node", "server.js"]
