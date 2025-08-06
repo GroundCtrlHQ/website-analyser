@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // API configuration - replace with your actual Railway domain
             const API_URL = window.location.hostname === 'localhost' 
                 ? 'http://localhost:3000'  // Local development
-                : 'https://groundctrl-web-analyser.railway.app';  // Replace with actual Railway URL
+                : 'https://groundctrl-website-analyser-production.up.railway.app';  // Replace with actual Railway URL
                 
             const response = await fetch(`${API_URL}/analyze`, {
                 method: 'POST',
