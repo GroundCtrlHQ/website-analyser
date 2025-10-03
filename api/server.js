@@ -28,7 +28,21 @@ app.use(helmet({
     }
   }
 }));
-app.use(cors());
+
+// Configure CORS to allow requests from your Vercel frontend
+const corsOptions = {
+  origin: [
+    'https://website-analyser-git-main-andanotherday.vercel.app',
+    'https://website-analyser.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:5173'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 // API-only server - no static files
 
@@ -204,30 +218,30 @@ function analyzeScripts(scripts) {
 async function runLighthouseAnalysis(url) {
   let chrome;
   try {
-    // Enhanced Chrome launcher configuration for Railway containers
-    chrome = await chromeLauncher.launch({
-      chromeFlags: [
-        '--headless',
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--disable-gpu',
-        '--disable-web-security',
-        '--disable-features=VizDisplayCompositor',
-        '--no-first-run',
-        '--no-zygote',
+    // Chrome launcher configuration optimized for local development
+    const chromeFlags = [
+      '--headless',
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu'
+    ];
+    
+    // Remove single-process mode which causes issues locally
+    if (process.env.RAILWAY_ENVIRONMENT) {
+      chromeFlags.push(
         '--single-process',
         '--disable-background-timer-throttling',
         '--disable-backgrounding-occluded-windows',
-        '--disable-renderer-backgrounding',
-        '--disable-ipc-flooding-protection',
-        '--remote-debugging-address=0.0.0.0',
-        '--remote-debugging-port=0'
-      ],
+        '--disable-renderer-backgrounding'
+      );
+    }
+    
+    chrome = await chromeLauncher.launch({
+      chromeFlags,
       connectionPollInterval: 500,
       maxConnectionRetries: 50,
-      logLevel: 'info'
+      logLevel: 'error'
     });
     
     console.log(`Chrome launched on port ${chrome.port}`);
