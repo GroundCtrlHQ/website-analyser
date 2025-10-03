@@ -34,6 +34,7 @@ const corsOptions = {
   origin: [
     'https://website-analyser-git-main-andanotherday.vercel.app',
     'https://website-analyser.vercel.app',
+    'https://website-analyser-psi.vercel.app',
     'http://localhost:3000',
     'http://localhost:5173'
   ],
